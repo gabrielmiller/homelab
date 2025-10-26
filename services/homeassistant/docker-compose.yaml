@@ -9,3 +9,10 @@ services:
     restart: unless-stopped
     privileged: true
     network_mode: host
+  esphome:
+    container_name: esphome
+    image: ghcr.io/esphome/esphome
+    ports:
+      - "6052:6052"
+    environment:
+      ESPHOME_DASHBOARD_USE_PING: true
