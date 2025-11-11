@@ -12,14 +12,16 @@ I run a home lab to self-host a handful of services. My goal in doing this is to
 
 # Devices
 ## Low-power server
-This is the heart of my home lab setup. I have a Orange Pi 5 Plus running [Armbian](https://www.armbian.com/). It is low power so I am content leaving it running 24/7. This is also on the UPS run so it won't be interrupted by intermittent power losses.
+This is the heart of my home lab setup. I have a Orange Pi 5 Plus running linux. The hardware is low power so I am content leaving it running 24/7. This is also on the UPS run so it won't be interrupted by intermittent power losses.
+
+I opted to install a [UEFI](https://github.com/edk2-porting/edk2-rk3588) on the system in order to be able to run a generic ARM mainline linux. You should run kernel 6.15 or newer for the orange pi 5 plus so that the various functionality is supported. Details on that [here](https://gitlab.collabora.com/hardware-enablement/rockchip-3588/notes-for-rockchip-3588/-/blob/main/mainline-status.md). As of writing these constraints limit your OS options. I decided to run fedora and plan to revisit to debian when it's on 6.15. A useful reference for initially configuring the hardware can be read [here](https://interfacinglinux.com/2025/08/25/edk2-uefi-for-the-rock-5-itx/).
 
 I run a number of services on this machine:
 1. [Portainer](https://www.portainer.io/) is a web ui and management system for docker-based containerized workloads. I use it to orchestrate most of the following services.
 2. [Pi Hole](https://pi-hole.net/) is a dns server that swallows requests to known ad networks, making it serve as a network-wide adblocker. Internally I use static IPs and dns. This makes for easy setup of custom dns records.
 3. [Photoprism](https://www.photoprism.app/) is a server that catalogs images. There a few services under its umbrella, including a WebDAV server where you can sync files to/from your devices, workers that index and run machine learning algorithms against your photos, and a webapp to actually view the images.
-  - I use [Photosync](https://www.photosync-app.com/home) on both android and ios to push my photos from mobile devices. This works like a cheapo version of cloud consumer photo syncing.
-  - I wrote my own public photo-sharing capabilities into [my personal website](https://github.com/gabrielmiller/gabrielmiller.org) a few years ago. Photoprism has since added their own capabilities, but I still kind of prefer the way I went about it.
+    - I use [Photosync](https://www.photosync-app.com/home) on both android and ios to push my photos from mobile devices. This works like a cheapo version of cloud consumer photo syncing.
+    - I wrote my own public photo-sharing capabilities into [my personal website](https://github.com/gabrielmiller/gabrielmiller.org) a few years ago. Photoprism has since added their own capabilities, but I still kind of prefer the way I went about it.
 4. [Home Assistant](https://www.home-assistant.io/) is a service that records and serves metrics on devices. I use it to record power usage of my devices. I use several plugs that utilize [esphome](https://github.com/esphome/esphome) firmware so that I have greater control of the data being collected by these devices.
 
 ## High-power AI server
@@ -31,6 +33,6 @@ In June 2025 a text to speech(TTS) AI model named [chatterbox](https://github.co
 - Currently I run the chatterbox tts webserver on the public internet from my house at a cheapo domain using a cert from letsencrypt. It's just secured with basic auth. I only leave it running when in use or when I'm at friends and plan to use it there. I have a few plans for this:
     - Put it behind a reverse proxy so that the proxy is responsible for tls termination and authentication
     - Create a separate service, also behind a reverse proxy, that allows for remotely starting the machine and service.
-    - Similarly, create a service that automatically powers off the high-power servrt after a period of inactivity so that it isn't needlessly consuming electricity. It would be convenient to have a cron system where you book a certain amount of time to keep it awake and then have it otherwise keep it turned off. _As far as I've been able to tell this seems to be complicated by my current network topology, and wake on lan doesn't consistently work because this server runs on a flaky wireless bridge._
+    - Similarly, create a service that automatically powers off the high-power server after a period of inactivity so that it isn't needlessly consuming electricity. It would be convenient to have a cron system where you book a certain amount of time to keep it awake and then have it otherwise keep it turned off. _As far as I've been able to tell this seems to be complicated by my current network topology, and wake on lan doesn't consistently work because this server runs on a flaky wireless bridge._
 - I don't have a great backup solution for my photos. I currently make a couple copies every december 31 on various hard drives and I also burn a blue ray disc with that year's worth of photos. I intend to set up a cron to regularly sync these files to a service like S3 to have more peace of mind.
 - It would also be nice to hook up more automation between photoprism and my personal photo sharing site so as to not have to manually do a number of steps to deploy new content.
