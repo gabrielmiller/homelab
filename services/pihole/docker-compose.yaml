@@ -10,9 +10,10 @@ services:
     environment:
       TZ: 'America/New_York'
       # FTLCONF_webserver_api_password: ''
+      FTLCONF_dns_rateLimit_count: 2000
       FTLCONF_dns_listeningMode: 'all'
     volumes:
-      - './etc-pihole:/etc/pihole'
+      - '/mnt/data/etc-pihole:/etc/pihole'
     cap_add:
       - SYS_NICE
     restart: unless-stopped
