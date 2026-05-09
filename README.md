@@ -33,5 +33,7 @@ In June 2025 a text to speech(TTS) AI model named [chatterbox](https://github.co
     - Put it behind a reverse proxy so that the proxy is responsible for tls termination and authentication
     - Create a separate service, also behind a reverse proxy, that allows for remotely starting the machine and service.
     - Similarly, create a service that automatically powers off the high-power server after a period of inactivity so that it isn't needlessly consuming electricity. It would be convenient to have a cron system where you book a certain amount of time to keep it awake and then have it otherwise keep it turned off.
+- Automate certificate renewal
+  - Either use caddy or certbot/related automation so that I don't have to manually renew certificates. 
 - I don't have a great backup solution for my photos. I currently make a couple copies every december 31 on various hard drives and I also burn a blue ray disc with that year's worth of photos. I intend to set up a cron to regularly sync these files to a service like S3 to have more peace of mind.
 - It would also be nice to hook up more automation between photoprism and my personal photo sharing site so as to not have to manually do a number of steps to deploy new content.
