@@ -3,12 +3,12 @@ version: '3'
 services:
   db:
     environment:
-      POSTGRES_DB: REDACTED
-      POSTGRES_USER: REDACTED
-      POSTGRES_PASSWORD: REDACTED
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     image: postgres:18.3-alpine
     ports:
-      - "5433:5432"
+      - "${PORT_MAPPING}"
   application:
     build:
       context: .
@@ -16,8 +16,10 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: REDACTED
-      SECRET_KEY_BASE: REDACTED
-      PHX_HOST: REDACTED
+      DATABASE_URL: "${DATABASE_URL}"
+      SECRET_KEY_BASE: "${SECRET_KEY_BASE}"
+      PHX_HOST: "${PHX_HOST}"
     ports:
       - "4000:4000"
+    links:
+      - db
