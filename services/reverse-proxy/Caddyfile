@@ -1,0 +1,18 @@
+{
+  email {$SSL_EMAIL}
+}
+
+{$DOMAIN} {
+  reverse_proxy /chatterbox/* {$PROXIED_URI}
+  reverse_proxy {$CONTROLLER_URI}
+}
+
+:80, :443 {
+  	header Content-Type text/html
+    respond <<HTML
+      <html>
+        <head><title>Unauthorized</title></head>
+        <body>401: Unauthorized</body>
+      </html>
+      HTML 401
+}
