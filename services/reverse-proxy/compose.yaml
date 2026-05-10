@@ -19,5 +19,4 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-networks:
-  bridge:
+    network_mode: host

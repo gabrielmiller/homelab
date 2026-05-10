@@ -18,3 +18,4 @@ services:
     image: postgres:18.3-alpine
     ports:
       - "15433:5432"
+    network_mode: host

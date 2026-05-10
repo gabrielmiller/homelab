@@ -14,6 +14,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    network_mode: host
   application:
     build:
       context: .
@@ -37,5 +38,4 @@ services:
       WOL_ALIAS: "${WOL_ALIAS}"
     ports:
       - "4000:4000"
-networks:
-  bridge:
+    network_mode: host
