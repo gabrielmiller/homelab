@@ -19,3 +19,6 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
+network:
+  default:
+    name: bridge
