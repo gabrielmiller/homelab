@@ -2,6 +2,7 @@ defmodule ControllerWeb.HomeLive do
   use ControllerWeb, :live_view
 
   alias Controller.Commands
+  alias Phoenix.LiveView.AsyncResult
 
   @impl true
   def render(assigns) do
