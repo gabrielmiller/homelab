@@ -7,6 +7,8 @@ defmodule Controller.Application do
 
   @impl true
   def start(_type, _args) do
+    write_private_key()
+
     children = [
       ControllerWeb.Telemetry,
       Controller.Repo,
@@ -30,5 +32,13 @@ defmodule Controller.Application do
   def config_change(changed, _new, removed) do
     ControllerWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp write_private_key() do
+    contents = Application.fetch_env!(:controller, :ssh_private_key)
+    path = Application.fetch_env!(:controller, :ssh_private_key_path)
+
+    File.write!(path, contents)
+    File.chmod!(path, 0o600)
   end
 end

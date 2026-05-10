@@ -65,7 +65,8 @@ defmodule Controller.MixProject do
       {:gettext, "~> 1.0"},
       {:jason, "~> 1.2"},
       {:bandit, "~> 1.5"},
-      {:oban, "~> 2.22"}
+      {:oban, "~> 2.22"},
+      {:erlexec, "~> 2.2"}
     ]
   end
 
