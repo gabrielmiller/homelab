@@ -50,15 +50,22 @@ defmodule Controller.Commands do
     end
   end
 
-  def execute_server_check(port \\ 22) do
-    with {:ok, _} <- command_server_check(port) |> :exec.run([:sync]) do
+  def execute_server_check(opts \\ []) do
+    port =
+      if Keyword.get(opts, :service) == :chatterbox,
+        do: chatterbox_port(),
+        else: ssh_port()
+
+    with {:ok, _} <- command_server_check(port) |> :exec.run([:sync, :stdout, :stderr]) do
       :ok
     else
       _e -> {:error, :server_offline}
     end
   end
 
-  def execute_wake_machine(wol_alias \\ "wol") do
+  def execute_wake_machine() do
+    wol_alias = Application.fetch_env!(@application, :wol_alias)
+
     parse_stdout = fn stdout ->
       stdout
       |> String.split("\n")
@@ -91,7 +98,9 @@ defmodule Controller.Commands do
     with {:ok, _} <- command_stop_chatterbox() |> :exec.run([:sync, :stdout, :stderr]) do
       :ok
     else
-      _e -> {:error, :failed_to_send_stop_msg}
+      e ->
+        IO.inspect(e)
+        {:error, :failed_to_send_stop_msg}
     end
   end
 
@@ -112,12 +121,18 @@ defmodule Controller.Commands do
     private_key_path = Application.fetch_env!(@application, :ssh_private_key_path)
     remote_user = Application.fetch_env!(@application, :ssh_remote_user)
 
-    "ssh -i #{private_key_path} #{remote_user}@#{hostname()} #{flags} \"#{command}\""
+    "ssh -i #{private_key_path} -p #{ssh_port()} #{remote_user}@#{hostname()} #{flags} \"#{command}\""
   end
+
+  defp chatterbox_port(),
+    do: Application.fetch_env!(@application, :chatterbox_port)
 
   defp chatterbox_remote_path(),
     do: Application.fetch_env!(@application, :chatterbox_remote_path)
 
   defp hostname(),
     do: Application.fetch_env!(@application, :ssh_hostname)
+
+  defp ssh_port(),
+    do: Application.fetch_env!(@application, :ssh_port)
 end
