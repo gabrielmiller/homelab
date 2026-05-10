@@ -20,5 +20,4 @@ services:
       - seccomp:unconfined
       - apparmor:unconfined
 networks:
-  default:
-    name: bridge
+  bridge:
