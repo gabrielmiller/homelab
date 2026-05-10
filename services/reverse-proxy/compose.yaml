@@ -8,7 +8,9 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - './Caddyfile:/etc/caddy/Caddyfile'
+      - ./conf:/etc/caddy
+      - caddy_data:/data
+      - caddy_config:/config
     environment:
       DOMAIN: "${DOMAIN}"
       CONTROLLER_URI: "${CONTROLLER_URI}"
