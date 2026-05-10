@@ -8,14 +8,17 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./conf:/etc/caddy
-      - caddy_data:/data
-      - caddy_config:/config
+      - "./conf:/etc/caddy:z"
+      - "caddy_data:/data:z"
+      - "caddy_config:/config"
     environment:
       DOMAIN: "${DOMAIN}"
       CONTROLLER_URI: "${CONTROLLER_URI}"
       PROXIED_URI: "${PROXIED_URI}"
       SSL_EMAIL: "${SSL_EMAIL}"
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
 
 volumes:
   caddy_data:
