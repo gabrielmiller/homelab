@@ -37,6 +37,6 @@ services:
       WOL_ALIAS: "${WOL_ALIAS}"
     ports:
       - "4000:4000"
-network:
+networks:
   default:
     name: bridge
