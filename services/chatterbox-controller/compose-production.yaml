@@ -23,7 +23,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database/${POSTGRES_DB}"
+      DOMAIN: "${DOMAIN}"
       SECRET_KEY_BASE: "${SECRET_KEY_BASE}"
-      PHX_HOST: "${PHX_HOST}"
     ports:
       - "4000:4000"

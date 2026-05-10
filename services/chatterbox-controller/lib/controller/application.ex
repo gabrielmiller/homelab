@@ -10,7 +10,6 @@ defmodule Controller.Application do
     children = [
       ControllerWeb.Telemetry,
       Controller.Repo,
-      {DNSCluster, query: Application.get_env(:controller, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Controller.PubSub},
       {Oban, Application.fetch_env!(:controller, Oban)},
       # Start a worker by calling: Controller.Worker.start_link(arg)
