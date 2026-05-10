@@ -16,3 +16,7 @@ services:
       CONTROLLER_URI: "${CONTROLLER_URI}"
       PROXIED_URI: "${PROXIED_URI}"
       SSL_EMAIL: "${SSL_EMAIL}"
+
+volumes:
+  caddy_data:
+  caddy_config:
