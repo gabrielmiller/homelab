@@ -93,9 +93,5 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/controller ./
 
 USER nobody
 
-# If using an environment that doesn't automatically reap zombie processes, it is
-# advised to add an init process such as tini via `apt-get install`
-# above and adding an entrypoint. See https://github.com/krallin/tini for details
-# ENTRYPOINT ["/tini", "--"]
-
-CMD ["/app/bin/server"]
+# Run migrates before starting server
+CMD ["sh", "-c", "bin/migrate && bin/server"]

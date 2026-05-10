@@ -17,7 +17,10 @@ defmodule ControllerWeb.Router do
   scope "/", ControllerWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live_session :controller_app do
+      live("/", HomeLive)
+      live("/admin", AdminLive)
+    end
   end
 
   # Other scopes may use custom stacks.

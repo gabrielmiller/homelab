@@ -1,8 +1,7 @@
 name: 'controller'
-version: '3'
 services:
   db-dev:
-    container_name: db_dev
+    container_name: db-dev
     environment:
       POSTGRES_DB: controller_dev
       POSTGRES_USER: postgres
@@ -11,7 +10,7 @@ services:
     ports:
       - "15432:5432"
   db-test:
-    container_name: db_test
+    container_name: db-test
     environment:
       POSTGRES_DB: controller_test
       POSTGRES_USER: postgres

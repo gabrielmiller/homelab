@@ -12,6 +12,7 @@ defmodule Controller.Application do
       Controller.Repo,
       {DNSCluster, query: Application.get_env(:controller, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Controller.PubSub},
+      {Oban, Application.fetch_env!(:controller, Oban)},
       # Start a worker by calling: Controller.Worker.start_link(arg)
       # {Controller.Worker, arg},
       # Start to serve requests, typically the last entry
