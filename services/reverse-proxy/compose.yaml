@@ -9,8 +9,8 @@ services:
       - 443:443
     volumes:
       - "./conf:/etc/caddy:z"
-      - "caddy_data:/data:z"
-      - "caddy_config:/config"
+      - "${CADDY_CONFIG_DIR}:/config:z"
+      - "${CADDY_DATA_DIR}:/data:z"
     environment:
       DOMAIN: "${DOMAIN}"
       CONTROLLER_URI: "${CONTROLLER_URI}"
@@ -19,7 +19,3 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-
-volumes:
-  caddy_data:
-  caddy_config:
