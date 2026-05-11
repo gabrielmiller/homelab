@@ -1,0 +1,15 @@
+[tools]
+age = '1.2.1'
+elixir = '1.19.5'
+erlang = '28.3.1'
+node = '24.13.1'
+sops = '3.10.2'
+
+[plugins]
+elixir = "https://github.com/remoteoss/dexter.git"
+
+[settings]
+
+[settings.sops]
+age_key_file = "key.txt"
+age_recipients = "age1vryttarfkfma0vk5nklnw3t2fgcht3vhpa38qjllqw9q26ffm9qqmkyfer"

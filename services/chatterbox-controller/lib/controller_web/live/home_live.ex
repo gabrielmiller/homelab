@@ -2,7 +2,6 @@ defmodule ControllerWeb.HomeLive do
   use ControllerWeb, :live_view
 
   alias Controller.Commands
-  alias Phoenix.LiveView.AsyncResult
 
   @impl true
   def render(assigns) do
@@ -27,7 +26,7 @@ defmodule ControllerWeb.HomeLive do
 
   @impl true
   def handle_async(:aliveness_check, {:ok, :ok}, socket) do
-    {:noreply, push_navigate(socket, to: ~p"/chatterbox")}
+    {:noreply, redirect(socket, external: "/chatterbox")}
   end
 
   def handle_async(:aliveness_check, {:ok, _}, socket), do: handle_not_alive(socket)
@@ -42,7 +41,6 @@ defmodule ControllerWeb.HomeLive do
       )
       |> push_navigate(to: ~p"/admin")
 
-    {:noreply,
-     assign(socket, :org, AsyncResult.failed(:aliveness_check, {:exit, "aliveness failure"}))}
+    {:noreply, socket}
   end
 end

@@ -1,14 +1,37 @@
 {
-  email {$SSL_EMAIL}
+  email <email>
 }
 
-{$DOMAIN} {
-  reverse_proxy /chatterbox/* {$PROXIED_URI}
-  reverse_proxy {$CONTROLLER_URI}
+<domain> {
+  basic_auth {
+    <user> <hashed password>
+  }
+
+  handle /live/websocket {
+    header Connection *Upgrade*
+    header Upgrade    websocket
+    reverse_proxy <controller uri>
+  }
+
+  handle /assets/* {
+    reverse_proxy <controller uri>
+  }
+
+  handle /admin {
+    reverse_proxy <controller uri>
+  }
+
+  handle / {
+    reverse_proxy <controller uri>
+  }
+
+  handle {
+    reverse_proxy <chatterbox uri>
+  }
 }
 
 :80, :443 {
-  	header Content-Type text/html
+       header Content-Type text/html
     respond <<HTML
       <html>
         <head><title>Unauthorized</title></head>
