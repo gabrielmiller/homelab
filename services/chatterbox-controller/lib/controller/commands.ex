@@ -3,10 +3,6 @@ defmodule Controller.Commands do
 
   @application :controller
 
-  defp command_network_check() do
-    "nmcli -t device"
-  end
-
   defp command_server_check(port) do
     "nc -v -z -w 1 #{hostname()} #{port}"
   end
@@ -26,29 +22,6 @@ defmodule Controller.Commands do
 
   defp command_poweroff_machine(),
     do: proxy_through_ssh("sudo poweroff")
-
-  def execute_network_check() do
-    connection_interface = Application.fetch_env!(@application, :connection_interface)
-    connection_type = Application.fetch_env!(@application, :connection_type)
-
-    parse_stdout = fn stdout ->
-      stdout
-      |> String.split("\n")
-      |> Enum.any?(&(&1 =~ "#{connection_interface}:#{connection_type}:connected:"))
-      |> then(fn match ->
-        if match,
-          do: :ok,
-          else: :error
-      end)
-    end
-
-    with {:ok, [stdout: [stdout]]} <- command_network_check() |> :exec.run([:sync, :stdout]),
-         :ok <- parse_stdout.(stdout) do
-      :ok
-    else
-      _e -> {:error, :network_offline}
-    end
-  end
 
   def execute_server_check(opts \\ []) do
     port =

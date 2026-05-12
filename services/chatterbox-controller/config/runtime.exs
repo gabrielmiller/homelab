@@ -7,8 +7,6 @@ end
 config :controller, ControllerWeb.Endpoint, http: [port: 4000]
 
 config :controller,
-  connection_interface: System.fetch_env!("CONNECTION_INTERFACE"),
-  connection_type: System.fetch_env!("CONNECTION_TYPE"),
   chatterbox_port: String.to_integer(System.fetch_env!("CHATTERBOX_PORT")),
   chatterbox_remote_path: System.fetch_env!("CHATTERBOX_REMOTE_PATH"),
   chatterbox_system_mac_address: System.fetch_env!("CHATTERBOX_SYSTEM_MAC_ADDRESS"),
