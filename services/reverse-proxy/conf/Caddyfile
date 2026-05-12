@@ -1,0 +1,41 @@
+{
+  email <email>
+}
+
+<domain> {
+  basic_auth {
+    <user> <hashed password>
+  }
+
+  handle /live/websocket {
+    header Connection *Upgrade*
+    header Upgrade    websocket
+    reverse_proxy <controller uri>
+  }
+
+  handle /assets/* {
+    reverse_proxy <controller uri>
+  }
+
+  handle /admin {
+    reverse_proxy <controller uri>
+  }
+
+  handle / {
+    reverse_proxy <controller uri>
+  }
+
+  handle {
+    reverse_proxy <chatterbox uri>
+  }
+}
+
+:80, :443 {
+       header Content-Type text/html
+    respond <<HTML
+      <html>
+        <head><title>Unauthorized</title></head>
+        <body>401: Unauthorized</body>
+      </html>
+      HTML 401
+}

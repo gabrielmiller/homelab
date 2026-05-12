@@ -1,0 +1,21 @@
+name: 'controller'
+services:
+  db-dev:
+    container_name: db-dev
+    environment:
+      POSTGRES_DB: controller_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    image: postgres:18.3-alpine
+    ports:
+      - "15432:5432"
+  db-test:
+    container_name: db-test
+    environment:
+      POSTGRES_DB: controller_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    image: postgres:18.3-alpine
+    ports:
+      - "15433:5432"
+    network_mode: host

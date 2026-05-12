@@ -1,0 +1,91 @@
+defmodule Controller.Commands do
+  @moduledoc false
+
+  @application :controller
+
+  defp command_server_check(port) do
+    "nc -v -z -w 1 #{hostname()} #{port}"
+  end
+
+  defp command_wake_machine() do
+    "wakeonlan #{Application.fetch_env!(@application, :chatterbox_system_mac_address)}"
+  end
+
+  defp command_start_chatterbox(),
+    do:
+      proxy_through_ssh(
+        "cd #{chatterbox_remote_path()} && docker compose -f docker-compose-rocm.yml up -d"
+      )
+
+  defp command_stop_chatterbox(),
+    do: proxy_through_ssh("cd #{chatterbox_remote_path()} && docker compose stop")
+
+  defp command_poweroff_machine(),
+    do: proxy_through_ssh("sudo poweroff")
+
+  def execute_server_check(opts \\ []) do
+    port =
+      if Keyword.get(opts, :service) == :chatterbox,
+        do: chatterbox_port(),
+        else: ssh_port()
+
+    with {:ok, _} <- command_server_check(port) |> :exec.run([:sync, :stdout, :stderr]) do
+      :ok
+    else
+      _e -> {:error, :server_offline}
+    end
+  end
+
+  def execute_wake_machine() do
+    with {:ok, _} <- command_wake_machine() |> :exec.run([:sync]) do
+      :ok
+    else
+      _e -> {:error, :failed_to_send_wake_msg}
+    end
+  end
+
+  def execute_start_chatterbox() do
+    with {:ok, _} <- command_start_chatterbox() |> :exec.run([:sync, :stdout, :stderr]) do
+      :ok
+    else
+      _e -> {:error, :failed_to_send_start_msg}
+    end
+  end
+
+  def execute_stop_chatterbox() do
+    with {:ok, _} <- command_stop_chatterbox() |> :exec.run([:sync, :stdout, :stderr]) do
+      :ok
+    else
+      e ->
+        IO.inspect(e)
+        {:error, :failed_to_send_stop_msg}
+    end
+  end
+
+  def execute_poweroff_machine() do
+    with {:ok, _} <- command_poweroff_machine() |> :exec.run([:sync, :stdout, :stderr]) do
+      :ok
+    else
+      _e -> {:error, :failed_to_send_poweroff_msg}
+    end
+  end
+
+  defp proxy_through_ssh(command) do
+    private_key_path = Application.fetch_env!(@application, :ssh_private_key_path)
+    remote_user = Application.fetch_env!(@application, :ssh_remote_user)
+
+    "ssh -i #{private_key_path} -p #{ssh_port()} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null #{remote_user}@#{hostname()} \"#{command}\""
+  end
+
+  defp chatterbox_port(),
+    do: Application.fetch_env!(@application, :chatterbox_port)
+
+  defp chatterbox_remote_path(),
+    do: Application.fetch_env!(@application, :chatterbox_remote_path)
+
+  defp hostname(),
+    do: Application.fetch_env!(@application, :ssh_hostname)
+
+  defp ssh_port(),
+    do: Application.fetch_env!(@application, :ssh_port)
+end
