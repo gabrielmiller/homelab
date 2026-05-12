@@ -35,7 +35,6 @@ services:
       SSH_PORT: "${SSH_PORT}"
       SSH_PRIVATE_KEY: "${SSH_PRIVATE_KEY}"
       SSH_REMOTE_USER: "${SSH_REMOTE_USER}"
-      WOL_ALIAS: "${WOL_ALIAS}"
     ports:
       - "4000:4000"
     network_mode: host

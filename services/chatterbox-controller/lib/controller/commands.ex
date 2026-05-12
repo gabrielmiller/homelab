@@ -11,8 +11,8 @@ defmodule Controller.Commands do
     "nc -v -z -w 1 #{hostname()} #{port}"
   end
 
-  defp command_wake_machine(wol_alias) do
-    "#{wol_alias} #{Application.fetch_env!(@application, :chatterbox_system_mac_address)}"
+  defp command_wake_machine() do
+    "wakeonlan #{Application.fetch_env!(@application, :chatterbox_system_mac_address)}"
   end
 
   defp command_start_chatterbox(),
@@ -25,7 +25,7 @@ defmodule Controller.Commands do
     do: proxy_through_ssh("cd #{chatterbox_remote_path()} && docker compose stop")
 
   defp command_poweroff_machine(),
-    do: proxy_through_ssh("sudo poweroff", flags: ["-t"])
+    do: proxy_through_ssh("sudo poweroff")
 
   def execute_network_check() do
     connection_interface = Application.fetch_env!(@application, :connection_interface)
@@ -64,22 +64,7 @@ defmodule Controller.Commands do
   end
 
   def execute_wake_machine() do
-    wol_alias = Application.fetch_env!(@application, :wol_alias)
-
-    parse_stdout = fn stdout ->
-      stdout
-      |> String.split("\n")
-      |> Enum.any?(&(&1 =~ "Magic packets: <sent=1>"))
-      |> then(fn match ->
-        if match,
-          do: :ok,
-          else: :error
-      end)
-    end
-
-    with {:ok, [stdout: [stdout]]} <-
-           command_wake_machine(wol_alias) |> :exec.run([:sync, :stdout, :stderr]),
-         :ok <- parse_stdout.(stdout) do
+    with {:ok, _} <- command_wake_machine() |> :exec.run([:sync]) do
       :ok
     else
       _e -> {:error, :failed_to_send_wake_msg}
@@ -112,16 +97,11 @@ defmodule Controller.Commands do
     end
   end
 
-  defp proxy_through_ssh(command, opts \\ []) do
-    flags =
-      opts
-      |> Keyword.get(:flags, [])
-      |> Enum.join(" ")
-
+  defp proxy_through_ssh(command) do
     private_key_path = Application.fetch_env!(@application, :ssh_private_key_path)
     remote_user = Application.fetch_env!(@application, :ssh_remote_user)
 
-    "ssh -i #{private_key_path} -p #{ssh_port()} #{remote_user}@#{hostname()} #{flags} \"#{command}\""
+    "ssh -i #{private_key_path} -p #{ssh_port()} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null #{remote_user}@#{hostname()} \"#{command}\""
   end
 
   defp chatterbox_port(),

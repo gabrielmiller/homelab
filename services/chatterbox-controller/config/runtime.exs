@@ -16,8 +16,7 @@ config :controller,
   ssh_port: String.to_integer(System.fetch_env!("SSH_PORT")),
   ssh_private_key: System.fetch_env!("SSH_PRIVATE_KEY"),
   ssh_private_key_path: "/tmp/ssh_private_key",
-  ssh_remote_user: System.fetch_env!("SSH_REMOTE_USER"),
-  wol_alias: System.fetch_env!("WOL_ALIAS")
+  ssh_remote_user: System.fetch_env!("SSH_REMOTE_USER")
 
 if config_env() == :prod do
   config :controller, Controller.Repo,
