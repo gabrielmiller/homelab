@@ -1,0 +1,6 @@
+[env]
+_.file = { path = ".secrets.json", redact = true }
+SOPS_AGE_KEY_FILE="../../key.txt"
+
+[settings.sops]
+age_key_file = "../../key.txt"
